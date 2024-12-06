@@ -6,8 +6,8 @@ import numpy
 x = 5
 y = 8
 
-# Add variables x and y
+# Sum x and y
 z = x + y
 
-# Print
+# Print the result
 print(z)
