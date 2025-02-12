@@ -162,41 +162,44 @@ def hangman(secret_word, with_help):
 
     Follows the other limitations detailed in the problem write-up.
     """
-    secret_word: string, the secret word to guess.
-    with_help: boolean, this enables help functionality if true.
-
     guesses_remaining = 10
+
     alphabet = string.ascii_lowercase
-    vowels = [a, e, i, o, u]
+    vowels = ['a', 'e', 'i', 'o', 'u']
     letters_guessed = []
 
     print("Welcome to Hangman!")
     # Display how many letters the secret words contains
     print(f"I am thinking of a word that is {len(secret_word)} letters long.")
 
-    while guesses <= 0:
+    while guesses_remaining > 0:
         print("--------------")
         print(f"You have {guesses_remaining} guesses left.") # Guesses remaining
         print(f"Available letters: {get_available_letters(letters_guessed)}") # Letters that have not yet been guessed
         guess = input("Please guess a letter: ") # Ask the user to guess a letter
-        guess = lower(guess)
+        guess = guess.lower()
+
         
         # Use of help
         if guess == "!":
             # The user needs 3 guesses remaining to ask for help
             with_help = True
-            if guesses_remaining > 3:
+            if guesses_remaining < 3:
                 print("You don't have enough guesses remaining to ask for help.")
             else:
-                guesses_remaining = guesses_remaining - 3
-                # Help function
+                guesses_remaining -= 3
+                missing_letters = [letter for letter in secret_word if letter not in letters_guessed]
+                if missing_letters:
+                    hint_letter = random.choice(missing_letters)
+                    letters_guessed.append(hint_letter)
+                    print(f"Revealing letter: {hint_letter}")
 
         # Filter the answer of the user
         if len(guess) != 1:
             print("That is not a valid letter. Please input a letter from the alphabet.")
-        else if guess not in alphabet:
+        elif guess not in alphabet:
             print("That is not a valid letter. Please input a letter from the alphabet.")
-        else if guess in letters_guessed:
+        elif guess in letters_guessed:
             print(f"Oops! You already guessed that letter: {get_word_progress(letters_guessed)}")
         else:
             if guess not in secret_word:
@@ -205,10 +208,10 @@ def hangman(secret_word, with_help):
                 else:
                     guesses_remaining = guesses_remaining - 1 # Update guesses based on election (consonant)
 
-                print(f"Oops! That letter is not in my word: {get_word_progress(letters_guessed)}")
+                print(f"Oops! You already guessed that letter: {get_word_progress(secret_word, letters_guessed)}")
             else: 
                 letters_guessed.append(guess)
-                print(f"Good guess: {get_word_progress(letters_guessed)}")
+                print(f"Good guess: {get_word_progress(secret_word, letters_guessed)}")
 
 
 
@@ -218,9 +221,9 @@ def hangman(secret_word, with_help):
 if __name__ == "__main__":
     # To test your game, uncomment the following three lines.
 
-    # secret_word = choose_word(wordlist)
-    # with_help = False
-    # hangman(secret_word, with_help)
+    secret_word = choose_word(wordlist)
+    with_help = False
+    hangman(secret_word, with_help)
 
     # After you complete with_help functionality, change with_help to True
     # and try entering "!" as a guess!
