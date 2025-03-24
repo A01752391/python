@@ -189,10 +189,15 @@ def hangman(secret_word, with_help):
             else:
                 guesses_remaining -= 3
                 missing_letters = [letter for letter in secret_word if letter not in letters_guessed]
+                
                 if missing_letters:
                     hint_letter = random.choice(missing_letters)
                     letters_guessed.append(hint_letter)
                     print(f"Revealing letter: {hint_letter}")
+
+                    if has_player_won(secret_word, letters_guessed):
+                        print("Congratulations! You won!")
+                        return
 
         # Filter the answer of the user
         if len(guess) != 1:
@@ -204,14 +209,19 @@ def hangman(secret_word, with_help):
         else:
             if guess not in secret_word:
                 if guess in vowels:
-                    guesses_remaining = guesses_remaining - 2 # Update guesses based on election (vowel)
+                    guesses_remaining -= 2 # Update guesses based on election (vowel)
                 else:
-                    guesses_remaining = guesses_remaining - 1 # Update guesses based on election (consonant)
+                    guesses_remaining -= 1 # Update guesses based on election (consonant)
 
                 print(f"Oops! You already guessed that letter: {get_word_progress(secret_word, letters_guessed)}")
             else: 
                 letters_guessed.append(guess)
                 print(f"Good guess: {get_word_progress(secret_word, letters_guessed)}")
+
+                if has_player_won(secret_word, letters_guessed):
+                    print("Congratulations! You won!")
+                    return
+
 
 
 
